@@ -1,4 +1,4 @@
-FROM mgor/docker-ubuntu-pkg-builder:zesty
+FROM mgor/docker-ubuntu-pkg-builder:RELEASE
 
 MAINTAINER Mikael Göransson <github@mgor.se>
 
