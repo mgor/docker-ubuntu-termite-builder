@@ -1,0 +1,43 @@
+FROM mgor/docker-ubuntu-pkg-builder:zesty
+
+MAINTAINER Mikael Göransson <github@mgor.se>
+
+ENV DEBIAN_FRONTEND noninteractive
+ENV BUILD_DIRECTORY /usr/local/src
+ENV BUILD_SCRIPT /usr/local/bin/build.sh
+ENV BUILD_SCRIPT_LIBVTE /usr/local/bin/libvte.build.sh
+ENV BUILD_SCRIPT_TERMITE /usr/local/bin/termite.build.sh
+
+# Using apt-get due to warning with apt:
+# WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+RUN apt-get update && \
+    apt-get install -y apt-utils && \
+    apt-get install -y \
+        sudo \
+        libgtk-3-dev \
+        gtk-doc-tools \
+        gnutls-bin \
+        valac \
+        intltool \
+        libpcre2-dev \
+        libglib3.0-cil-dev \
+        libgnutls28-dev \
+        libgirepository1.0-dev \
+        libxml2-utils \
+        gperf \
+        && \
+    # Clean up!
+    rm -rf /var/lib/apt/lists/*
+
+COPY patches /tmp/patches
+COPY build.sh ${BUILD_SCRIPT}
+COPY libvte.build.sh ${BUILD_SCRIPT_LIBVTE}
+COPY termite.build.sh ${BUILD_SCRIPT_TERMITE}
+
+RUN chmod 755 ${BUILD_SCRIPT}
+RUN chmod 755 ${BUILD_SCRIPT_LIBVTE}
+RUN chmod 755 ${BUILD_SCRIPT_TERMITE}
+
+WORKDIR ${BUILD_DIRECTORY}
+
+CMD ${BUILD_SCRIPT}
